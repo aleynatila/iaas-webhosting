@@ -73,5 +73,10 @@ try {
       <li><code>PHP Version</code>: <?php echo phpversion(); ?></li>
       <li><code>Hostname</code>: <?php echo gethostname(); ?></li>
     </ul>
+    
+    <h2>Navigation</h2>
+    <ul>
+      <li><a href="posts.php">View Blog Posts</a></li>
+    </ul>
   </body>
 </html>
