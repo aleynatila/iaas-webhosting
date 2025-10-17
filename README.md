@@ -27,13 +27,13 @@ graph LR
     MySQL -.->|Read/Write| DBData
     Nginx -.->|Write| Logs
     
-    style Client fill:#e1f5ff
-    style Nginx fill:#c8e6c9
-    style PHP fill:#ffe0b2
-    style MySQL fill:#f8bbd0
-    style AppCode fill:#f5f5f5
-    style DBData fill:#f5f5f5
-    style Logs fill:#f5f5f5
+    style Client fill:#e1f5ff,color:#000
+    style Nginx fill:#c8e6c9,color:#000
+    style PHP fill:#ffe0b2,color:#000
+    style MySQL fill:#f8bbd0,color:#000
+    style AppCode fill:#f5f5f5,color:#000
+    style DBData fill:#f5f5f5,color:#000
+    style Logs fill:#f5f5f5,color:#000
 ```
 
 **Data Flow Summary**:
