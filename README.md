@@ -4,19 +4,46 @@ Demo IaaS-style web hosting using Docker Compose to simulate infrastructure comp
 
 ## Architecture
 
-nginx (web) -> php-fpm (app) -> mysql (db)
+**Request Flow**: Client → nginx (web layer) → PHP-FPM (app layer) → MySQL (database layer)
 
 ```mermaid
 graph LR
-  Nginx[nginx] --> PHP[php-fpm]
-  PHP --> MySQL[mysql]
-  subgraph Storage
-    DBData[(MySQL Data)]
-    WebFiles[(/var/www/html)]
-  end
-  MySQL --> DBData
-  PHP --> WebFiles
+    Client["Client<br/>localhost:8080"]
+    
+    Client -->|HTTP| Nginx["nginx<br/>(Web Layer)<br/>Port 80"]
+    
+    Nginx -->|FastCGI /var/www/html| PHP["PHP-FPM<br/>(App Layer)<br/>Port 9000"]
+    
+    PHP -->|SQL Queries| MySQL["MySQL<br/>(Database Layer)<br/>Port 3306"]
+    
+    subgraph Volumes["Persistent Storage"]
+        AppCode["./site<br/>(Application Code)<br/>Shared: nginx + PHP"]
+        DBData["db_data<br/>(MySQL Data)<br/>/var/lib/mysql"]
+        Logs["nginx_logs<br/>(Access Logs)"]
+    end
+    
+    Nginx -.->|Read| AppCode
+    PHP -.->|Read/Write| AppCode
+    MySQL -.->|Read/Write| DBData
+    Nginx -.->|Write| Logs
+    
+    style Client fill:#e1f5ff
+    style Nginx fill:#c8e6c9
+    style PHP fill:#ffe0b2
+    style MySQL fill:#f8bbd0
+    style AppCode fill:#f5f5f5
+    style DBData fill:#f5f5f5
+    style Logs fill:#f5f5f5
 ```
+
+**Data Flow Summary**:
+- Client makes HTTP request to nginx on port 8080
+- nginx receives request, routes to PHP-FPM via FastCGI protocol
+- PHP-FPM reads application code from shared `./site` volume
+- PHP-FPM executes code and makes SQL queries to MySQL
+- MySQL reads/writes data to persistent `db_data` volume
+- nginx logs requests to `nginx_logs` volume
+- Response flows back through PHP → nginx → Client
 
 ## Deployment
 
